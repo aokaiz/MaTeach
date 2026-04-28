@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 interface ApiData {
   message?: string
@@ -25,8 +26,6 @@ export default function Home() {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
       padding: '2rem',
       background: 'linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #0a0f1a 100%)',
     }}>
@@ -38,10 +37,10 @@ export default function Home() {
         pointerEvents: 'none',
       }} />
 
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: 680, width: '100%' }}>
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: 800, width: '100%', margin: '0 auto', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
           <div style={{
             display: 'inline-block',
             background: 'rgba(0,200,150,0.08)',
@@ -51,94 +50,171 @@ export default function Home() {
             fontSize: 11,
             letterSpacing: 3,
             color: '#00c896',
-            marginBottom: '1.5rem',
+            marginBottom: '1rem',
             textTransform: 'uppercase',
           }}>
-            SYSTEM ONLINE
+            AI Q&A SYSTEM
           </div>
           <h1 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontSize: 'clamp(1.8rem, 5vw, 2.8rem)',
             fontWeight: 900,
-            letterSpacing: -2,
-            lineHeight: 1,
+            letterSpacing: -1,
+            lineHeight: 1.2,
             color: '#fff',
-            marginBottom: '0.75rem',
+            marginBottom: '0.5rem',
           }}>
-            Hello<span style={{ color: '#00c896' }}>_</span>World
+            材料科学
+            <span style={{ color: '#00c896' }}> AI答题系统</span>
           </h1>
-          <p style={{ color: '#666', fontSize: 14, letterSpacing: 1 }}>
-            Next.js · Node.js · PostgreSQL
+          <p style={{ color: '#555', fontSize: 13, letterSpacing: 1 }}>
+            Materials Science AI Q&A System
           </p>
         </div>
 
-        {/* API Card */}
-        <div style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: 12,
-          overflow: 'hidden',
-          marginBottom: '1.5rem',
-        }}>
-          {/* Card header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '12px 20px',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-            background: 'rgba(255,255,255,0.02)',
-          }}>
-            {['#ff5f57','#febc2e','#28c840'].map(c => (
-              <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />
-            ))}
-            <span style={{ marginLeft: 8, fontSize: 12, color: '#444', letterSpacing: 1 }}>
-              GET /api/hello
-            </span>
-          </div>
-
-          {/* Card body */}
-          <div style={{ padding: '1.5rem 2rem' }}>
-            {loading ? (
-              <div style={{ color: '#444', fontSize: 14 }}>
-                {'> '}<span style={{ color: '#00c896' }}>fetching...</span>
-              </div>
-            ) : data?.error ? (
-              <div>
-                <div style={{ color: '#ff5f57', fontSize: 13, marginBottom: 8 }}>❌ Error</div>
-                <div style={{ color: '#666', fontSize: 13, fontFamily: 'monospace' }}>{data.error}</div>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <Row label="message" value={data?.message} color="#00c896" />
-                <Row label="status"  value={data?.status}  color="#00c896" />
-                <Row label="db_time" value={data?.db_time ? new Date(data.db_time).toLocaleString('zh-CN') : ''} />
-                <Row label="db_version" value={data?.db_version?.split(' ').slice(0,2).join(' ')} />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Stack info */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        {/* Feature highlights - top section */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, margin: '1.5rem 0' }}>
           {[
-            { name: 'Next.js', ver: '14', desc: 'App Router' },
-            { name: 'Node.js', ver: '20', desc: 'Runtime' },
-            { name: 'PostgreSQL', ver: '14+', desc: 'Database' },
+            { name: 'AI 智能答题', ver: 'GPT-4', desc: '智能答疑' },
+            { name: '材料科学题库', ver: '1000+', desc: '持续更新' },
+            { name: '学习分析', ver: 'AI', desc: '个性化辅导' },
           ].map(s => (
             <div key={s.name} style={{
               background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(255,255,255,0.05)',
               borderRadius: 10,
-              padding: '1rem',
+              padding: '0.8rem',
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: 13, color: '#fff', marginBottom: 4 }}>{s.name}</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#00c896', lineHeight: 1, marginBottom: 4 }}>{s.ver}</div>
-              <div style={{ fontSize: 11, color: '#444', letterSpacing: 1 }}>{s.desc}</div>
+              <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>{s.name}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: '#00c896', lineHeight: 1, marginBottom: 4 }}>{s.ver}</div>
+              <div style={{ fontSize: 10, color: '#444', letterSpacing: 1 }}>{s.desc}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: 12, color: '#333', letterSpacing: 1 }}>
-          DEPLOYED ON VPS · PM2 · NGINX
+        {/* Main CTA - Center and Big */}
+        <div style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center',
+          padding: '2rem 0'
+        }}>
+          <Link 
+            href="/quiz"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '28px 80px',
+              background: 'linear-gradient(135deg, rgba(0,200,150,0.2) 0%, rgba(0,180,130,0.15) 100%)',
+              border: '2px solid rgba(0,200,150,0.4)',
+              borderRadius: 16,
+              color: '#00c896',
+              fontSize: 22,
+              fontWeight: 700,
+              textDecoration: 'none',
+              letterSpacing: 3,
+              transition: 'all 0.3s ease',
+              boxShadow: '0 0 40px rgba(0,200,150,0.15), inset 0 0 20px rgba(0,200,150,0.05)',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0,200,150,0.3) 0%, rgba(0,180,130,0.25) 100%)'
+              e.currentTarget.style.borderColor = 'rgba(0,200,150,0.6)'
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(0,200,150,0.25), inset 0 0 30px rgba(0,200,150,0.1)'
+              e.currentTarget.style.transform = 'scale(1.02)'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0,200,150,0.2) 0%, rgba(0,180,130,0.15) 100%)'
+              e.currentTarget.style.borderColor = 'rgba(0,200,150,0.4)'
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(0,200,150,0.15), inset 0 0 20px rgba(0,200,150,0.05)'
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+          >
+            开始答题
+          </Link>
+        </div>
+
+        {/* Footer - System Status + Admin Login */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: '1.5rem' }}>
+          {/* System Status Card */}
+          <div style={{
+            flex: 1,
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 12,
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '10px 16px',
+              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(255,255,255,0.02)',
+            }}>
+              {['#ff5f57','#febc2e','#28c840'].map(c => (
+                <div key={c} style={{ width: 8, height: 8, borderRadius: '50%', background: c }} />
+              ))}
+              <span style={{ marginLeft: 8, fontSize: 11, color: '#444', letterSpacing: 1 }}>
+                系统状态
+              </span>
+            </div>
+            <div style={{ padding: '1rem 1.25rem' }}>
+              {loading ? (
+                <div style={{ color: '#444', fontSize: 12 }}>
+                  {'> '}<span style={{ color: '#00c896' }}>loading...</span>
+                </div>
+              ) : data?.error ? (
+                <div style={{ color: '#ff5f57', fontSize: 12 }}>❌ 连接失败</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <Row label="status"  value={data?.status}  color="#00c896" />
+                  <Row label="db_time" value={data?.db_time ? new Date(data.db_time).toLocaleString('zh-CN') : ''} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Admin Login Button */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Link 
+              href="/admin/login"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '14px 28px',
+                background: 'rgba(255,200,0,0.08)',
+                border: '1px solid rgba(255,200,0,0.2)',
+                borderRadius: 10,
+                color: '#ffc800',
+                fontSize: 13,
+                fontWeight: 600,
+                textDecoration: 'none',
+                letterSpacing: 2,
+                transition: 'all 0.3s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255,200,0,0.15)'
+                e.currentTarget.style.borderColor = 'rgba(255,200,0,0.4)'
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(255,200,0,0.08)'
+                e.currentTarget.style.borderColor = 'rgba(255,200,0,0.2)'
+              }}
+            >
+              管理员登录
+            </Link>
+          </div>
+        </div>
+
+        <div style={{ textAlign: 'center', marginBottom: '1rem', fontSize: 11, color: '#333', letterSpacing: 1 }}>
+          MATERIALS SCIENCE · AI POWERED
         </div>
       </div>
     </main>
@@ -147,8 +223,8 @@ export default function Home() {
 
 function Row({ label, value, color }: { label: string; value?: string; color?: string }) {
   return (
-    <div style={{ display: 'flex', gap: 16, fontSize: 13, fontFamily: 'monospace' }}>
-      <span style={{ color: '#444', minWidth: 110 }}>{label}:</span>
+    <div style={{ display: 'flex', gap: 12, fontSize: 12, fontFamily: 'monospace' }}>
+      <span style={{ color: '#444', minWidth: 70 }}>{label}:</span>
       <span style={{ color: color || '#e8e8f0', wordBreak: 'break-all' }}>{value}</span>
     </div>
   )

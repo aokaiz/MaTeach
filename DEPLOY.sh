@@ -23,23 +23,11 @@ node -v   # 确认版本
 npm install -g pm2
 
 # ============================================================
-# 第二步：配置 PostgreSQL
+# 第二步：配置 PostgreSQL（使用独立脚本）
 # ============================================================
-
-# 启动 PostgreSQL
-systemctl start postgresql
-systemctl enable postgresql
-
-# 创建数据库和用户
-sudo -u postgres psql <<EOF
-CREATE USER hellouser WITH PASSWORD 'hellopass';
-CREATE DATABASE hellodb OWNER hellouser;
-GRANT ALL PRIVILEGES ON DATABASE hellodb TO hellouser;
-\q
-EOF
-
-# 验证连接
-psql -U hellouser -d hellodb -h localhost -c "SELECT version();"
+# 数据库部署已移至 scripts/deploy-db.sh
+# 首次部署时运行: bash scripts/deploy-db.sh
+# 或设置环境变量: DB_USER=xxx DB_PASS=xxx DB_NAME=xxx bash scripts/deploy-db.sh
 
 # ============================================================
 # 第三步：上传项目到 VPS
@@ -106,32 +94,64 @@ curl http://localhost:3000
 curl http://localhost:3000/api/hello
 
 # ============================================================
-# 第七步：配置 Nginx 反向代理
+# 第七步：配置 Nginx 反向代理（支持 HTTPS）
 # ============================================================
 
 # 创建 nginx 配置
-cat > /etc/nginx/sites-available/helloworld <<'NGINX'
+cat > /etc/nginx/sites-available/mateach <<'NGINX'
 server {
     listen 80;
-    server_name 你的VPS_IP;   # 或者你的域名
+    server_name 你的域名 www.你的域名;
+    
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name 你的域名 www.你的域名;
+
+    # SSL 证书路径（请提前申请并修改为实际路径）
+    ssl_certificate       /root/cert/你的域名/fullchain.pem;
+    ssl_certificate_key   /root/cert/你的域名/privkey.pem;
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
 
     location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_cache_bypass $http_upgrade;
+      proxy_pass http://127.0.0.1:3001;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "connection_upgrade";
+
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
     }
 }
 NGINX
 
-# 启用配置
-ln -s /etc/nginx/sites-available/helloworld /etc/nginx/sites-enabled/
+# 启用配置（放入 conf.d 目录）
+cp /etc/nginx/sites-available/mateach /etc/nginx/conf.d/mateach.conf
+rm -f /etc/nginx/sites-available/mateach  # 清理
 nginx -t          # 检查语法
 systemctl restart nginx
+
+# ============================================================
+# 第七步半：申请 SSL 证书（使用 acme.sh）
+# ============================================================
+# 申请证书后，修改上面的 ssl_certificate 路径
+
+# 安装 acme.sh
+curl https://get.acme.sh | sh -s email=你的邮箱@域名.com
+
+# 申请证书（需要域名已解析到当前服务器）
+~/.acme.sh/acme.sh --issue -d 你的域名 -d www.你的域名 --webroot /var/www/mateach
+
+# 安装证书到指定目录
+mkdir -p /root/cert/你的域名
+~/.acme.sh/acme.sh --install-cert -d 你的域名 \
+  --key-file /root/cert/你的域名/privkey.pem \
+  --fullchain-file /root/cert/你的域名/fullchain.pem
+
+# 修改 nginx 配置中的证书路径后重载
+nginx -t && systemctl reload nginx
 
 # ============================================================
 # 第八步：开放防火墙端口
