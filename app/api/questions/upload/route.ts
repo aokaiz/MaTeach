@@ -33,9 +33,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // 生成唯一文件名
-    const ext = file.name.split('.').pop() || 'jpg'
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
+    // 生成唯一文件名（使用 crypto 确保唯一性）
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(2, 10)
+    const uuid = crypto.randomUUID()
+    let filename = `${timestamp}-${random}-${uuid}.${ext}`
 
     // 确保上传目录存在
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'questions')
@@ -43,10 +46,16 @@ export async function POST(request: Request) {
       await mkdir(uploadDir, { recursive: true })
     }
 
+    // 确保文件名唯一（处理极端情况）
+    let filepath = path.join(uploadDir, filename)
+    while (existsSync(filepath)) {
+      filename = `${timestamp}-${random}-${crypto.randomUUID()}.${ext}`
+      filepath = path.join(uploadDir, filename)
+    }
+
     // 保存文件
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const filepath = path.join(uploadDir, filename)
     await writeFile(filepath, buffer)
 
     // 返回访问 URL

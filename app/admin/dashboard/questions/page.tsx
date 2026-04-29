@@ -524,7 +524,7 @@ export default function QuestionsPage() {
                   {form.image_url && (
                     <div style={{ marginTop: 12 }}>
                       <img 
-                        src={form.image_url} 
+                        src={`${form.image_url}?t=${Date.now()}`}
                         alt="题目图片预览" 
                         style={{ 
                           maxWidth: '100%', 
