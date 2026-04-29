@@ -35,7 +35,12 @@ export default function SettingsPage() {
 
   const fetchConfig = async () => {
     try {
-      const res = await fetch('/api/config')
+      const res = await fetch('/api/config', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const data = await res.json()
       if (data.success) {
         setConfig({

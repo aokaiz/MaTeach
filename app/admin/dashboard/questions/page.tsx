@@ -39,7 +39,12 @@ export default function QuestionsPage() {
 
   const fetchQuestions = async () => {
     try {
-      const res = await fetch('/api/questions/list')
+      const res = await fetch('/api/questions/list', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const data = await res.json()
       if (data.success) {
         setQuestions(data.questions)
@@ -68,7 +73,8 @@ export default function QuestionsPage() {
     try {
       const res = await fetch('/api/questions/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
+        signal: AbortSignal.timeout(30000) // 30秒超时
       })
       const data = await res.json()
 

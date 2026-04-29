@@ -31,7 +31,12 @@ export default function AdminsPage() {
 
   const fetchAdmins = async () => {
     try {
-      const res = await fetch(`/api/admin/list?currentRole=${currentAdmin?.role || ''}`)
+      const res = await fetch(`/api/admin/list?currentRole=${currentAdmin?.role || ''}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const data = await res.json()
       if (data.success) {
         setAdmins(data.admins)
