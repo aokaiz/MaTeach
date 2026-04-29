@@ -39,7 +39,12 @@ export default function QuizPage() {
 
   const fetchQuestions = async () => {
     try {
-      const res = await fetch('/api/questions/list')
+      const res = await fetch('/api/questions/list', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const data = await res.json()
       if (data.success) {
         const shuffled = [...data.questions].sort(() => Math.random() - 0.5)
