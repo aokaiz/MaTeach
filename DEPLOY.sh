@@ -34,20 +34,20 @@ npm install -g pm2
 # ============================================================
 
 # 创建项目目录
-mkdir -p /var/www/helloworld
+mkdir -p /var/www/mateach
 
 # 方式A：从本地用 scp 上传
-# scp -r ./helloworld/* root@你的VPS_IP:/var/www/helloworld/
+# scp -r ./mateach/* root@你的VPS_IP:/var/www/mateach/
 
 # 方式B：用 Git（推荐）
 # 先在 GitHub 建仓库，push 代码，然后：
-# cd /var/www && git clone https://github.com/你的用户名/helloworld.git
+# cd /var/www && git clone https://github.com/你的用户名/mateach.git
 
 # ============================================================
 # 第四步：安装依赖 & 配置环境变量
 # ============================================================
 
-cd /var/www/helloworld
+cd /var/www/mateach
 
 # 安装依赖
 npm install
@@ -85,9 +85,9 @@ pm2 save
 
 # 常用 PM2 命令
 pm2 status           # 查看状态
-pm2 logs helloworld  # 查看日志
-pm2 restart helloworld
-pm2 stop helloworld
+pm2 logs mateach     # 查看日志
+pm2 restart mateach
+pm2 stop mateach
 
 # 验证服务在跑
 curl http://localhost:3000
@@ -123,6 +123,22 @@ server {
 
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
+
+      # 支持大文件上传（10MB）
+      client_max_body_size 10M;
+    }
+
+    # 上传图片目录单独配置
+    location /uploads/ {
+      alias /var/www/mateach/public/uploads/;
+      
+      # 支持大文件上传
+      client_max_body_size 10M;
+      
+      # 禁止访问隐藏文件
+      if ($request_filename ~* /\.) {
+        return 403;
+      }
     }
 }
 NGINX
@@ -177,8 +193,8 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 # 可选：后续更新代码流程
 # ============================================================
 
-cd /var/www/helloworld
+cd /var/www/mateach
 git pull                  # 拉最新代码
 npm install               # 如有新依赖
 npm run build             # 重新构建
-pm2 restart helloworld    # 重启服务
+pm2 restart mateach    # 重启服务
