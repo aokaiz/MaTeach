@@ -15,7 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/hello')
+    fetch('/api/status')
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false) })
       .catch(e => { setData({ error: e.message }); setLoading(false) })

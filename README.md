@@ -1,6 +1,6 @@
-# Hello World — Next.js + PostgreSQL
+# Mat — Next.js + PostgreSQL
 
-类似  技术栈的 Hello World 起点项目。
+Mat 是一个基于 Next.js + PostgreSQL 的在线题库系统。
 
 ## 技术栈
 - **Next.js 14** — App Router + Server Components
@@ -11,10 +11,10 @@
 
 ## 项目结构
 ```
-helloworld/
+mat/
 ├── app/
-│   ├── api/hello/route.ts   ← API 接口，查询数据库
-│   ├── page.tsx             ← 首页
+│   ├── api/                ← API 接口
+│   ├── page.tsx            ← 首页
 │   ├── layout.tsx
 │   └── globals.css
 ├── lib/

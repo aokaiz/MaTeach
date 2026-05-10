@@ -1,4 +1,4 @@
-# Hello World 完整部署流程
+# Mat 完整部署流程
 # Next.js + Node.js + PostgreSQL on VPS
 
 # ============================================================
@@ -34,20 +34,20 @@ npm install -g pm2
 # ============================================================
 
 # 创建项目目录
-mkdir -p /var/www/mateach
+mkdir -p /var/www/mat
 
 # 方式A：从本地用 scp 上传
-# scp -r ./mateach/* root@你的VPS_IP:/var/www/mateach/
+# scp -r ./mat/* root@你的VPS_IP:/var/www/mat/
 
 # 方式B：用 Git（推荐）
 # 先在 GitHub 建仓库，push 代码，然后：
-# cd /var/www && git clone https://github.com/你的用户名/mateach.git
+# cd /var/www && git clone https://github.com/你的用户名/mat.git
 
 # ============================================================
 # 第四步：安装依赖 & 配置环境变量
 # ============================================================
 
-cd /var/www/mateach
+cd /var/www/mat
 
 # 安装依赖
 npm install
@@ -60,9 +60,9 @@ nano .env.local
 # 内容：
 # DB_HOST=localhost
 # DB_PORT=5432
-# DB_USER=hellouser
-# DB_PASSWORD=hellopass   ← 改成你的密码
-# DB_NAME=hellodb
+# DB_USER=matuser
+# DB_PASSWORD=matpass   ← 改成你的密码
+# DB_NAME=matdb
 # NODE_ENV=production
 
 # ============================================================
@@ -85,20 +85,20 @@ pm2 save
 
 # 常用 PM2 命令
 pm2 status           # 查看状态
-pm2 logs mateach     # 查看日志
-pm2 restart mateach
-pm2 stop mateach
+pm2 logs mat     # 查看日志
+pm2 restart mat
+pm2 stop mat
 
 # 验证服务在跑
 curl http://localhost:3000
-curl http://localhost:3000/api/hello
+curl http://localhost:3000/api/questions
 
 # ============================================================
 # 第七步：配置 Nginx 反向代理（支持 HTTPS）
 # ============================================================
 
 # 创建 nginx 配置
-cat > /etc/nginx/sites-available/mateach <<'NGINX'
+cat > /etc/nginx/sites-available/mat <<'NGINX'
 server {
     listen 80;
     server_name 你的域名 www.你的域名;
@@ -130,7 +130,7 @@ server {
 
     # 上传图片目录单独配置
     location /uploads/ {
-      alias /var/www/mateach/public/uploads/;
+      alias /var/www/mat/public/uploads/;
       
       # 支持大文件上传
       client_max_body_size 10M;
@@ -144,8 +144,8 @@ server {
 NGINX
 
 # 启用配置（放入 conf.d 目录）
-cp /etc/nginx/sites-available/mateach /etc/nginx/conf.d/mateach.conf
-rm -f /etc/nginx/sites-available/mateach  # 清理
+cp /etc/nginx/sites-available/mat /etc/nginx/conf.d/mat.conf
+rm -f /etc/nginx/sites-available/mat  # 清理
 nginx -t          # 检查语法
 systemctl restart nginx
 
@@ -158,7 +158,7 @@ systemctl restart nginx
 curl https://get.acme.sh | sh -s email=你的邮箱@域名.com
 
 # 申请证书（需要域名已解析到当前服务器）
-~/.acme.sh/acme.sh --issue -d 你的域名 -d www.你的域名 --webroot /var/www/mateach
+~/.acme.sh/acme.sh --issue -d 你的域名 -d www.你的域名 --webroot /var/www/mat
 
 # 安装证书到指定目录
 mkdir -p /root/cert/你的域名
@@ -187,14 +187,14 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 # 验证：浏览器访问
 # ============================================================
 # http://你的VPS_IP
-# 应该看到 Hello World 页面，显示数据库连接成功
+# 应该看到 Mat 首页
 
 # ============================================================
 # 可选：后续更新代码流程
 # ============================================================
 
-cd /var/www/mateach
+cd /var/www/mat
 git pull                  # 拉最新代码
 npm install               # 如有新依赖
 npm run build             # 重新构建
-pm2 restart mateach    # 重启服务
+pm2 restart mat    # 重启服务

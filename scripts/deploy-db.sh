@@ -1,5 +1,5 @@
 #!/bin/bash
-# MaTeach 数据库部署脚本
+# Mat 数据库部署脚本
 # 支持幂等运行：重复执行不会报错
 # 从 .env.local 读取配置（不存在时使用默认值）
 
@@ -26,9 +26,9 @@ fi
 # ============================================================
 # 配置（环境变量优先，否则使用默认值）
 # ============================================================
-DB_USER="${DB_USER:-hellouser}"
-DB_PASSWORD="${DB_PASSWORD:-hellopass}"
-DB_NAME="${DB_NAME:-hellodb}"
+DB_USER="${DB_USER:-matuser}"
+DB_PASSWORD="${DB_PASSWORD:-matpass}"
+DB_NAME="${DB_NAME:-matdb}"
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"
 

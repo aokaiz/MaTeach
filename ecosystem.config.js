@@ -1,9 +1,9 @@
 module.exports = {
   apps: [{
-    name: 'Mateach',
+    name: 'Mat',
     script: 'node_modules/.bin/next',
     args: 'start -p 3001',
-    cwd: '/var/www/MaTeach',
+    cwd: '/var/www/mat',
     instances: 1,
     autorestart: true,
     watch: false,

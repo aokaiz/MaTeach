@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const result = await pool.query('SELECT NOW() AS db_time, version() AS db_version')
     return NextResponse.json({
-      message: 'MaTeach - Materials Science AI Q&A System',
+      message: 'Mat - Materials Science AI Q&A System',
       db_time: result.rows[0].db_time,
       db_version: result.rows[0].db_version,
       status: 'PostgreSQL connected ✅',
